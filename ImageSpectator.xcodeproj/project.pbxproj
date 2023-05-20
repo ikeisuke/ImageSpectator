@@ -1,0 +1,573 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		FB9457A22A19891100016A1D /* ImageSpectatorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB9457A12A19891100016A1D /* ImageSpectatorApp.swift */; };
+		FB9457A42A19891100016A1D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB9457A32A19891100016A1D /* ContentView.swift */; };
+		FB9457A62A19891300016A1D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FB9457A52A19891300016A1D /* Assets.xcassets */; };
+		FB9457A92A19891300016A1D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FB9457A82A19891300016A1D /* Preview Assets.xcassets */; };
+		FB9457B42A19891300016A1D /* ImageSpectatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB9457B32A19891300016A1D /* ImageSpectatorTests.swift */; };
+		FB9457BE2A19891300016A1D /* ImageSpectatorUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB9457BD2A19891300016A1D /* ImageSpectatorUITests.swift */; };
+		FB9457C02A19891300016A1D /* ImageSpectatorUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB9457BF2A19891300016A1D /* ImageSpectatorUITestsLaunchTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		FB9457B02A19891300016A1D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FB9457962A19891100016A1D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FB94579D2A19891100016A1D;
+			remoteInfo = ImageSpectator;
+		};
+		FB9457BA2A19891300016A1D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FB9457962A19891100016A1D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FB94579D2A19891100016A1D;
+			remoteInfo = ImageSpectator;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		FB94579E2A19891100016A1D /* ImageSpectator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageSpectator.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FB9457A12A19891100016A1D /* ImageSpectatorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSpectatorApp.swift; sourceTree = "<group>"; };
+		FB9457A32A19891100016A1D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		FB9457A52A19891300016A1D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		FB9457A82A19891300016A1D /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		FB9457AA2A19891300016A1D /* ImageSpectator.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ImageSpectator.entitlements; sourceTree = "<group>"; };
+		FB9457AF2A19891300016A1D /* ImageSpectatorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImageSpectatorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		FB9457B32A19891300016A1D /* ImageSpectatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSpectatorTests.swift; sourceTree = "<group>"; };
+		FB9457B92A19891300016A1D /* ImageSpectatorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImageSpectatorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		FB9457BD2A19891300016A1D /* ImageSpectatorUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSpectatorUITests.swift; sourceTree = "<group>"; };
+		FB9457BF2A19891300016A1D /* ImageSpectatorUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSpectatorUITestsLaunchTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FB94579B2A19891100016A1D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FB9457AC2A19891300016A1D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FB9457B62A19891300016A1D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		FB9457952A19891100016A1D = {
+			isa = PBXGroup;
+			children = (
+				FB9457A02A19891100016A1D /* ImageSpectator */,
+				FB9457B22A19891300016A1D /* ImageSpectatorTests */,
+				FB9457BC2A19891300016A1D /* ImageSpectatorUITests */,
+				FB94579F2A19891100016A1D /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		FB94579F2A19891100016A1D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FB94579E2A19891100016A1D /* ImageSpectator.app */,
+				FB9457AF2A19891300016A1D /* ImageSpectatorTests.xctest */,
+				FB9457B92A19891300016A1D /* ImageSpectatorUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FB9457A02A19891100016A1D /* ImageSpectator */ = {
+			isa = PBXGroup;
+			children = (
+				FB9457A12A19891100016A1D /* ImageSpectatorApp.swift */,
+				FB9457A32A19891100016A1D /* ContentView.swift */,
+				FB9457A52A19891300016A1D /* Assets.xcassets */,
+				FB9457AA2A19891300016A1D /* ImageSpectator.entitlements */,
+				FB9457A72A19891300016A1D /* Preview Content */,
+			);
+			path = ImageSpectator;
+			sourceTree = "<group>";
+		};
+		FB9457A72A19891300016A1D /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				FB9457A82A19891300016A1D /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		FB9457B22A19891300016A1D /* ImageSpectatorTests */ = {
+			isa = PBXGroup;
+			children = (
+				FB9457B32A19891300016A1D /* ImageSpectatorTests.swift */,
+			);
+			path = ImageSpectatorTests;
+			sourceTree = "<group>";
+		};
+		FB9457BC2A19891300016A1D /* ImageSpectatorUITests */ = {
+			isa = PBXGroup;
+			children = (
+				FB9457BD2A19891300016A1D /* ImageSpectatorUITests.swift */,
+				FB9457BF2A19891300016A1D /* ImageSpectatorUITestsLaunchTests.swift */,
+			);
+			path = ImageSpectatorUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		FB94579D2A19891100016A1D /* ImageSpectator */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FB9457C32A19891300016A1D /* Build configuration list for PBXNativeTarget "ImageSpectator" */;
+			buildPhases = (
+				FB94579A2A19891100016A1D /* Sources */,
+				FB94579B2A19891100016A1D /* Frameworks */,
+				FB94579C2A19891100016A1D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ImageSpectator;
+			productName = ImageSpectator;
+			productReference = FB94579E2A19891100016A1D /* ImageSpectator.app */;
+			productType = "com.apple.product-type.application";
+		};
+		FB9457AE2A19891300016A1D /* ImageSpectatorTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FB9457C62A19891300016A1D /* Build configuration list for PBXNativeTarget "ImageSpectatorTests" */;
+			buildPhases = (
+				FB9457AB2A19891300016A1D /* Sources */,
+				FB9457AC2A19891300016A1D /* Frameworks */,
+				FB9457AD2A19891300016A1D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FB9457B12A19891300016A1D /* PBXTargetDependency */,
+			);
+			name = ImageSpectatorTests;
+			productName = ImageSpectatorTests;
+			productReference = FB9457AF2A19891300016A1D /* ImageSpectatorTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		FB9457B82A19891300016A1D /* ImageSpectatorUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FB9457C92A19891300016A1D /* Build configuration list for PBXNativeTarget "ImageSpectatorUITests" */;
+			buildPhases = (
+				FB9457B52A19891300016A1D /* Sources */,
+				FB9457B62A19891300016A1D /* Frameworks */,
+				FB9457B72A19891300016A1D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FB9457BB2A19891300016A1D /* PBXTargetDependency */,
+			);
+			name = ImageSpectatorUITests;
+			productName = ImageSpectatorUITests;
+			productReference = FB9457B92A19891300016A1D /* ImageSpectatorUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		FB9457962A19891100016A1D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1430;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					FB94579D2A19891100016A1D = {
+						CreatedOnToolsVersion = 14.3;
+					};
+					FB9457AE2A19891300016A1D = {
+						CreatedOnToolsVersion = 14.3;
+						TestTargetID = FB94579D2A19891100016A1D;
+					};
+					FB9457B82A19891300016A1D = {
+						CreatedOnToolsVersion = 14.3;
+						TestTargetID = FB94579D2A19891100016A1D;
+					};
+				};
+			};
+			buildConfigurationList = FB9457992A19891100016A1D /* Build configuration list for PBXProject "ImageSpectator" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = FB9457952A19891100016A1D;
+			productRefGroup = FB94579F2A19891100016A1D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FB94579D2A19891100016A1D /* ImageSpectator */,
+				FB9457AE2A19891300016A1D /* ImageSpectatorTests */,
+				FB9457B82A19891300016A1D /* ImageSpectatorUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		FB94579C2A19891100016A1D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FB9457A92A19891300016A1D /* Preview Assets.xcassets in Resources */,
+				FB9457A62A19891300016A1D /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FB9457AD2A19891300016A1D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FB9457B72A19891300016A1D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FB94579A2A19891100016A1D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FB9457A42A19891100016A1D /* ContentView.swift in Sources */,
+				FB9457A22A19891100016A1D /* ImageSpectatorApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FB9457AB2A19891300016A1D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FB9457B42A19891300016A1D /* ImageSpectatorTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FB9457B52A19891300016A1D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FB9457C02A19891300016A1D /* ImageSpectatorUITestsLaunchTests.swift in Sources */,
+				FB9457BE2A19891300016A1D /* ImageSpectatorUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		FB9457B12A19891300016A1D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FB94579D2A19891100016A1D /* ImageSpectator */;
+			targetProxy = FB9457B02A19891300016A1D /* PBXContainerItemProxy */;
+		};
+		FB9457BB2A19891300016A1D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FB94579D2A19891100016A1D /* ImageSpectator */;
+			targetProxy = FB9457BA2A19891300016A1D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		FB9457C12A19891300016A1D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.3;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		FB9457C22A19891300016A1D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		FB9457C42A19891300016A1D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ImageSpectator/ImageSpectator.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"ImageSpectator/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = jp.reirou.ImageSpectator;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		FB9457C52A19891300016A1D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ImageSpectator/ImageSpectator.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"ImageSpectator/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = jp.reirou.ImageSpectator;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		FB9457C72A19891300016A1D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.3;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = jp.reirou.ImageSpectatorTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ImageSpectator.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ImageSpectator";
+			};
+			name = Debug;
+		};
+		FB9457C82A19891300016A1D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.3;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = jp.reirou.ImageSpectatorTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ImageSpectator.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ImageSpectator";
+			};
+			name = Release;
+		};
+		FB9457CA2A19891300016A1D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = jp.reirou.ImageSpectatorUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = ImageSpectator;
+			};
+			name = Debug;
+		};
+		FB9457CB2A19891300016A1D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = jp.reirou.ImageSpectatorUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = ImageSpectator;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		FB9457992A19891100016A1D /* Build configuration list for PBXProject "ImageSpectator" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FB9457C12A19891300016A1D /* Debug */,
+				FB9457C22A19891300016A1D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FB9457C32A19891300016A1D /* Build configuration list for PBXNativeTarget "ImageSpectator" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FB9457C42A19891300016A1D /* Debug */,
+				FB9457C52A19891300016A1D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FB9457C62A19891300016A1D /* Build configuration list for PBXNativeTarget "ImageSpectatorTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FB9457C72A19891300016A1D /* Debug */,
+				FB9457C82A19891300016A1D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FB9457C92A19891300016A1D /* Build configuration list for PBXNativeTarget "ImageSpectatorUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FB9457CA2A19891300016A1D /* Debug */,
+				FB9457CB2A19891300016A1D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = FB9457962A19891100016A1D /* Project object */;
+}
