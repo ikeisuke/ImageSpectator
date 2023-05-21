@@ -17,12 +17,14 @@ struct DirectoryView: View {
     var body: some View {
         if directoryItem.isDirectory {
             DisclosureGroup(isExpanded: $directoryItem.isOpened, content: {
-                ForEach(directoryItem.children) { childItem in
-                    DirectoryView(directoryLoader: directoryLoader,
-                                  directoryItem: childItem,
-                                  selectedImage: $selectedImage,
-                                  selectedFileURL: $selectedFileURL,
-                                  selectedImageItems: $selectedImageItems)
+                LazyVStack {
+                    ForEach(directoryItem.children) { childItem in
+                        DirectoryView(directoryLoader: directoryLoader,
+                                      directoryItem: childItem,
+                                      selectedImage: $selectedImage,
+                                      selectedFileURL: $selectedFileURL,
+                                      selectedImageItems: $selectedImageItems)
+                    }
                 }
             }, label: {
                 Text(directoryItem.name)
