@@ -14,6 +14,9 @@
 		FB9457B42A19891300016A1D /* ImageSpectatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB9457B32A19891300016A1D /* ImageSpectatorTests.swift */; };
 		FB9457BE2A19891300016A1D /* ImageSpectatorUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB9457BD2A19891300016A1D /* ImageSpectatorUITests.swift */; };
 		FB9457C02A19891300016A1D /* ImageSpectatorUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB9457BF2A19891300016A1D /* ImageSpectatorUITestsLaunchTests.swift */; };
+		FBE1B86D2A1A547000D8F177 /* DirectoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBE1B86C2A1A547000D8F177 /* DirectoryItem.swift */; };
+		FBE1B86F2A1A54B500D8F177 /* DirectoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBE1B86E2A1A54B500D8F177 /* DirectoryView.swift */; };
+		FBE1B8732A1A558800D8F177 /* DirectoryLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBE1B8722A1A558800D8F177 /* DirectoryLoader.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +48,9 @@
 		FB9457B92A19891300016A1D /* ImageSpectatorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImageSpectatorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FB9457BD2A19891300016A1D /* ImageSpectatorUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSpectatorUITests.swift; sourceTree = "<group>"; };
 		FB9457BF2A19891300016A1D /* ImageSpectatorUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSpectatorUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		FBE1B86C2A1A547000D8F177 /* DirectoryItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryItem.swift; sourceTree = "<group>"; };
+		FBE1B86E2A1A54B500D8F177 /* DirectoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryView.swift; sourceTree = "<group>"; };
+		FBE1B8722A1A558800D8F177 /* DirectoryLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DirectoryLoader.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +106,9 @@
 				FB9457A52A19891300016A1D /* Assets.xcassets */,
 				FB9457AA2A19891300016A1D /* ImageSpectator.entitlements */,
 				FB9457A72A19891300016A1D /* Preview Content */,
+				FBE1B86C2A1A547000D8F177 /* DirectoryItem.swift */,
+				FBE1B86E2A1A54B500D8F177 /* DirectoryView.swift */,
+				FBE1B8722A1A558800D8F177 /* DirectoryLoader.swift */,
 			);
 			path = ImageSpectator;
 			sourceTree = "<group>";
@@ -260,6 +269,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				FB9457A42A19891100016A1D /* ContentView.swift in Sources */,
+				FBE1B8732A1A558800D8F177 /* DirectoryLoader.swift in Sources */,
+				FBE1B86D2A1A547000D8F177 /* DirectoryItem.swift in Sources */,
+				FBE1B86F2A1A54B500D8F177 /* DirectoryView.swift in Sources */,
 				FB9457A22A19891100016A1D /* ImageSpectatorApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
