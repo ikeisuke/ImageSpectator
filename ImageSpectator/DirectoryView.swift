@@ -71,12 +71,7 @@ struct DirectoryView: View {
             directoryLoader.preload(directoryItem: directory)
             let files = directory.children
             if let firstImageItem = files.first {
-                if firstImageItem.image == nil {
-                    if let image = NSImage(contentsOf: firstImageItem.url) {
-                        firstImageItem.image = Image(nsImage: image)
-                        return firstImageItem
-                    }
-                }
+                return firstImageItem
             }
             return nil
         }

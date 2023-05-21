@@ -12,6 +12,7 @@ class DirectoryLoader: ObservableObject {
     @Published var selectedImage: Image?
     @Published var selectedFileURL: URL?
     @Published var selectedImageItems: [DirectoryItem] = []
+    @Published var isLoading = false
     
     static let allowedExtensions = ["jpg", "png", "gif", "webp"]
 
@@ -25,19 +26,15 @@ class DirectoryLoader: ObservableObject {
     }
     
     func preload(directoryItem: DirectoryItem) {
+        self.isLoading = true
         directoryItem.children = Self.fetchDirectoryContent(from: directoryItem.url, parent: directoryItem)
+        self.isLoading = false
     }
 
     func fetchContents(for directoryItem: DirectoryItem) {
+        self.isLoading = true
         directoryItem.children = Self.fetchDirectoryContent(from: directoryItem.url, parent: directoryItem)
-
-        for childItem in directoryItem.children {
-            if !childItem.isDirectory && DirectoryLoader.allowedExtensions.contains(childItem.url.pathExtension) {
-                if let nsImage = NSImage(contentsOf: childItem.url) {
-                    childItem.image = Image(nsImage: nsImage)
-                }
-            }
-        }
+        self.isLoading = false
     }
 
     private func createDirectoryItem(url: URL) -> DirectoryItem {
