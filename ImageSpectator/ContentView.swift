@@ -12,13 +12,12 @@ struct ContentView: View {
     @State private var selectedImage: Image? = nil
     @State private var selectedFileURL: URL? = nil
     @State private var selectedImageItems: [DirectoryItem] = []
-    @State private var focusedItem: DirectoryItem?
 
     var body: some View {
         GeometryReader { geometry in
             HSplitView {
                 ScrollView {
-                    DirectoryView(directoryLoader: directoryLoader, directoryItem: directoryLoader.rootDirectory, selectedImage: $selectedImage, selectedFileURL: $selectedFileURL, selectedImageItems: $selectedImageItems, focusedItem:$focusedItem)
+                    DirectoryView(directoryLoader: directoryLoader, directoryItem: directoryLoader.rootDirectory, selectedImage: $selectedImage, selectedFileURL: $selectedFileURL, selectedImageItems: $selectedImageItems)
                         .frame(width: 200)
                 }
                 if let image = selectedImage{
@@ -27,17 +26,28 @@ struct ContentView: View {
                        .aspectRatio(contentMode: .fit)
                } else if !selectedImageItems.isEmpty {
                    ScrollView {
-                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))]) {
-                            ForEach(selectedImageItems, id: \.id) { imageItem in
-                                if let image = imageItem.image {
-                                    image
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(width: 200)
-                                }
-                            }
-                        }
-                    }
+                       LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))]) {
+                           ForEach(selectedImageItems, id: \.id) { imageItem in
+                               if let image = imageItem.image {
+                                   image
+                                       .resizable()
+                                       .aspectRatio(contentMode: .fit)
+                                       .frame(width: 200)
+                                       .onTapGesture {
+                                           if imageItem.parent?.name == "ALL" {
+                                               if let parent = imageItem.parent {
+                                                   directoryLoader.loadImageItems(directoryItem: parent)
+                                               }
+                                           } else {
+                                               directoryLoader.selectedImage = image
+                                               directoryLoader.selectedFileURL = imageItem.url
+                                               directoryLoader.selectedImageItems = []
+                                           }
+                                       }
+                               }
+                           }
+                       }
+                   }
                 } else {
                     Color.gray
                 }
@@ -56,6 +66,7 @@ class DirectoryItem: ObservableObject, Identifiable, Hashable {
     let url: URL
     let name: String
     let isDirectory: Bool
+    weak var parent: DirectoryItem?
     @Published var isOpened: Bool = false
     @Published var children: [DirectoryItem] = []
     @Published var image: Image? = nil
@@ -82,7 +93,6 @@ struct DirectoryView: View {
     @Binding var selectedImage: Image?
     @Binding var selectedFileURL: URL?
     @Binding var selectedImageItems: [DirectoryItem]
-    @Binding var focusedItem: DirectoryItem?
 
     var body: some View {
         if directoryItem.isDirectory {
@@ -92,8 +102,7 @@ struct DirectoryView: View {
                                   directoryItem: childItem,
                                   selectedImage: $selectedImage,
                                   selectedFileURL: $selectedFileURL,
-                                  selectedImageItems: $selectedImageItems,
-                                  focusedItem: $focusedItem)
+                                  selectedImageItems: $selectedImageItems)
                 }
             }, label: {
                 Text(directoryItem.name)
@@ -124,18 +133,30 @@ struct DirectoryView: View {
                 }
         }
     }
-    
     private func loadImageItems(directoryItem: DirectoryItem) {
-        selectedImageItems = directoryItem.children
-        if let firstImageItem = selectedImageItems.first, let image = NSImage(contentsOf: firstImageItem.url) {
-            selectedImage = Image(nsImage: image)
-            selectedFileURL = firstImageItem.url
+        if directoryItem.name == "ALL" {
+            loadFirstImageFromSubDirectories(directoryItem: directoryItem)
+        } else {
+            selectedImageItems = directoryItem.children.filter { $0.image != nil }
+            if let firstImageItem = selectedImageItems.first, let image = NSImage(contentsOf: firstImageItem.url) {
+                selectedImage = Image(nsImage: image)
+                selectedFileURL = firstImageItem.url
+            }
+        }
+    }
+
+    private func loadFirstImageFromSubDirectories(directoryItem: DirectoryItem) {
+        selectedImageItems = directoryItem.children.compactMap { directory -> DirectoryItem? in
+            return directory.children.first(where: { $0.image != nil })
         }
     }
 }
 
 class DirectoryLoader: ObservableObject {
     @Published var rootDirectory: DirectoryItem
+    @Published var selectedImage: Image?
+    @Published var selectedFileURL: URL?
+    @Published var selectedImageItems: [DirectoryItem] = []
     
     static let allowedExtensions = ["jpg", "png", "gif", "webp"]
 
@@ -147,7 +168,7 @@ class DirectoryLoader: ObservableObject {
     }
 
     func fetchContents(for directoryItem: DirectoryItem) {
-        directoryItem.children = Self.fetchDirectoryContent(from: directoryItem.url)
+        directoryItem.children = Self.fetchDirectoryContent(from: directoryItem.url, parent: directoryItem)
 
         for childItem in directoryItem.children {
             if !childItem.isDirectory && DirectoryLoader.allowedExtensions.contains(childItem.url.pathExtension) {
@@ -166,7 +187,7 @@ class DirectoryLoader: ObservableObject {
         return DirectoryItem(url: url, name:url.lastPathComponent, isDirectory: true)
     }
 
-    private static func fetchDirectoryContent(from url: URL) -> [DirectoryItem] {
+    private static func fetchDirectoryContent(from url: URL, parent: DirectoryItem) -> [DirectoryItem] {
         let fileManager = FileManager.default
         do {
             let fileURLs = try fileManager.contentsOfDirectory(at: url, includingPropertiesForKeys: nil)
@@ -176,7 +197,9 @@ class DirectoryLoader: ObservableObject {
                 var isDirectory: ObjCBool = false
                 let exists = fileManager.fileExists(atPath: fileURL.path, isDirectory: &isDirectory)
                 if exists && (isDirectory.boolValue || allowedExtensions.contains(fileURL.pathExtension)) {
-                    directoryItems.append(DirectoryItem(url: fileURL, name: fileURL.lastPathComponent, isDirectory: isDirectory.boolValue))
+                    let childItem = DirectoryItem(url: fileURL, name: fileURL.lastPathComponent, isDirectory: isDirectory.boolValue)
+                    childItem.parent = parent
+                    directoryItems.append(childItem)
                 }
             }
             return directoryItems
@@ -186,4 +209,12 @@ class DirectoryLoader: ObservableObject {
         }
     }
     
+    
+    func loadImageItems(directoryItem: DirectoryItem) {
+        selectedImageItems = directoryItem.children
+        if let firstImageItem = selectedImageItems.first, let image = NSImage(contentsOf: firstImageItem.url) {
+            selectedImage = Image(nsImage: image)
+            selectedFileURL = firstImageItem.url
+        }
+    }
 }
