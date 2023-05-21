@@ -26,13 +26,13 @@ struct ContentView: View {
                        .aspectRatio(contentMode: .fit)
                } else if !selectedImageItems.isEmpty {
                    ScrollView {
-                       LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))]) {
+                       LazyVGrid(columns: Array(repeating: GridItem(.fixed(300)), count: 4)) {
                            ForEach(selectedImageItems, id: \.id) { imageItem in
                                if let image = imageItem.image {
                                    image
                                        .resizable()
                                        .aspectRatio(contentMode: .fit)
-                                       .frame(width: 200)
+                                       .frame(width: 300, height: 300)
                                        .onTapGesture {
                                            if imageItem.parent?.name == "ALL" {
                                                if let parent = imageItem.parent {
@@ -41,7 +41,6 @@ struct ContentView: View {
                                            } else {
                                                directoryLoader.selectedImage = image
                                                directoryLoader.selectedFileURL = imageItem.url
-                                               directoryLoader.selectedImageItems = []
                                            }
                                        }
                                }

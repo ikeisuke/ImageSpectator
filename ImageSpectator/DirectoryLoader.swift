@@ -21,18 +21,18 @@ class DirectoryLoader: ObservableObject {
         self.rootDirectory = DirectoryItem(url: rootDirectoryURL, name:"ALL", isDirectory: true, isOpened: opened)
         fetchContents(for: self.rootDirectory)
     }
+    
+    func preload(directoryItem: DirectoryItem) {
+        directoryItem.children = Self.fetchDirectoryContent(from: directoryItem.url, parent: directoryItem)
+    }
 
     func fetchContents(for directoryItem: DirectoryItem) {
         directoryItem.children = Self.fetchDirectoryContent(from: directoryItem.url, parent: directoryItem)
 
         for childItem in directoryItem.children {
             if !childItem.isDirectory && DirectoryLoader.allowedExtensions.contains(childItem.url.pathExtension) {
-                DispatchQueue.global(qos: .background).async {
-                    if let nsImage = NSImage(contentsOf: childItem.url) {
-                        DispatchQueue.main.async {
-                            childItem.image = Image(nsImage: nsImage)
-                        }
-                    }
+                if let nsImage = NSImage(contentsOf: childItem.url) {
+                    childItem.image = Image(nsImage: nsImage)
                 }
             }
         }

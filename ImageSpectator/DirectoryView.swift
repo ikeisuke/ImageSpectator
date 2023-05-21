@@ -29,14 +29,18 @@ struct DirectoryView: View {
             })
             .onTapGesture {
                 selectedImage = nil
-                if directoryItem.children.isEmpty {
-                    directoryLoader.fetchContents(for: directoryItem)
-                    directoryItem.isOpened = true
-                    loadImageItems(directoryItem: directoryItem)
+                if directoryItem.name == "ALL" {
+                    loadFirstImageFromSubDirectories(directoryItem: directoryItem)
                 } else {
-                    directoryItem.isOpened.toggle()
-                    if directoryItem.isOpened {
+                    if directoryItem.children.isEmpty {
+                        directoryLoader.fetchContents(for: directoryItem)
+                        directoryItem.isOpened = true
                         loadImageItems(directoryItem: directoryItem)
+                    } else {
+                        directoryItem.isOpened.toggle()
+                        if directoryItem.isOpened {
+                            loadImageItems(directoryItem: directoryItem)
+                        }
                     }
                 }
             }
@@ -57,17 +61,24 @@ struct DirectoryView: View {
         if directoryItem.name == "ALL" {
             loadFirstImageFromSubDirectories(directoryItem: directoryItem)
         } else {
-            selectedImageItems = directoryItem.children.filter { $0.image != nil }
-            if let firstImageItem = selectedImageItems.first, let image = NSImage(contentsOf: firstImageItem.url) {
-                selectedImage = Image(nsImage: image)
-                selectedFileURL = firstImageItem.url
-            }
+            directoryLoader.fetchContents(for: directoryItem)
+            selectedImageItems = directoryItem.children
         }
     }
 
     private func loadFirstImageFromSubDirectories(directoryItem: DirectoryItem) {
         selectedImageItems = directoryItem.children.compactMap { directory -> DirectoryItem? in
-            return directory.children.first(where: { $0.image != nil })
+            directoryLoader.preload(directoryItem: directory)
+            let files = directory.children
+            if let firstImageItem = files.first {
+                if firstImageItem.image == nil {
+                    if let image = NSImage(contentsOf: firstImageItem.url) {
+                        firstImageItem.image = Image(nsImage: image)
+                        return firstImageItem
+                    }
+                }
+            }
+            return nil
         }
     }
 }
