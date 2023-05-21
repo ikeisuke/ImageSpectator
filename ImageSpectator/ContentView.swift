@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @ObservedObject var directoryLoader = DirectoryLoader(opened: true)
+    @State private var directoryLoader = DirectoryLoader(directoryURL: nil)
     @State private var selectedImage: Image? = nil
     @State private var selectedFileURL: URL? = nil
     @State private var selectedImageItems: [DirectoryItem] = []
@@ -16,10 +16,32 @@ struct ContentView: View {
     var body: some View {
         GeometryReader { geometry in
             HSplitView {
-                ScrollView {
-                    DirectoryView(directoryLoader: directoryLoader, directoryItem: directoryLoader.rootDirectory, selectedImage: $selectedImage, selectedFileURL: $selectedFileURL, selectedImageItems: $selectedImageItems)
-                        .frame(width: 200)
+                VSplitView {
+                    Button("Select Directory") {
+                        let openPanel = NSOpenPanel()
+                        openPanel.canChooseDirectories = true
+                        openPanel.canChooseFiles = false
+                        openPanel.allowsMultipleSelection = false
+                        openPanel.begin { (result) in
+                            if result == NSApplication.ModalResponse.OK {
+                                directoryLoader = DirectoryLoader(directoryURL: openPanel.url)
+                            }
+                        }
+                    }
+                    ScrollView {
+                        if let root = directoryLoader.rootDirectory {
+                            DirectoryView(directoryLoader: directoryLoader,
+                                          directoryItem: root,
+                                          selectedImage: $selectedImage,
+                                          selectedFileURL: $selectedFileURL,
+                                          selectedImageItems: $selectedImageItems)
+                                .frame(width: 200)
+                        } else {
+                            Text("Please select a directory")
+                        }
+                    }
                 }
+                .frame(width: 200)
                 if let image = selectedImage{
                    image
                        .resizable()

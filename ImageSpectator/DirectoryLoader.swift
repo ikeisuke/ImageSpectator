@@ -8,18 +8,20 @@
 import SwiftUI
 
 class DirectoryLoader: ObservableObject {
-    @Published var rootDirectory: DirectoryItem
+    @Published var rootDirectory: DirectoryItem?
     @Published var selectedImage: Image?
     @Published var selectedFileURL: URL?
     @Published var selectedImageItems: [DirectoryItem] = []
     
     static let allowedExtensions = ["jpg", "png", "gif", "webp"]
 
-    init(opened:Bool = false) {
-        let homeDirectory = FileManager.default.homeDirectoryForCurrentUser
-        let rootDirectoryURL = homeDirectory.appendingPathComponent("tmp")
-        self.rootDirectory = DirectoryItem(url: rootDirectoryURL, name:"ALL", isDirectory: true, isOpened: opened)
-        fetchContents(for: self.rootDirectory)
+    init(directoryURL: URL?, opened:Bool = false) {
+        if let dir = directoryURL {
+            self.rootDirectory = DirectoryItem(url: dir, name:"ALL", isDirectory: true, isOpened: opened)
+            if let root = self.rootDirectory {
+                fetchContents(for: root)
+            }
+        }
     }
     
     func preload(directoryItem: DirectoryItem) {
