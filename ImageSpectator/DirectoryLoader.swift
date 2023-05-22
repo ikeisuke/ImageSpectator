@@ -72,3 +72,83 @@ class DirectoryLoader: ObservableObject {
         }
     }
 }
+
+
+class Directory: Hashable, Identifiable {
+    let id = UUID()
+    let url: URL
+    var directories: [Directory] = []
+    var files: [File] = []
+    weak var parent: Directory?
+    var isOpened: Bool = false
+    
+    init(url: URL, parent: Directory?) {
+        self.url = url
+        self.parent = parent
+    }
+    
+    func load() {
+        let fileManager = FileManager.default
+        do {
+            let contents = try fileManager.contentsOfDirectory(at: self.url, includingPropertiesForKeys: nil)
+            var tmpDirectories: [Directory] = []
+            var tmpFiles: [File] = [];
+            for content in contents {
+                var isDirectory: ObjCBool = false
+                let exists = fileManager.fileExists(atPath: content.path, isDirectory: &isDirectory)
+                if exists {
+                    if isDirectory.boolValue {
+                        tmpDirectories.append(Directory(url: content, parent: self))
+                    } else if File.allowedExtensions.contains(content.pathExtension) {
+                        tmpFiles.append(File(url: content, parent: self))
+                    }
+                }
+            }
+            directories = tmpDirectories.sorted(by: { $0.url.lastPathComponent < $1.url.lastPathComponent })
+            files = tmpFiles.sorted(by: { $0.url.lastPathComponent < $1.url.lastPathComponent })
+        } catch {
+            print("Error while enumerating files \(url.path): \(error.localizedDescription)")
+        }
+    }
+    
+    func hasDirectory() -> Bool {
+        return !directories.isEmpty
+    }
+    
+    func hasFile() -> Bool {
+        return !files.isEmpty
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
+    static func == (lhs: Directory, rhs: Directory) -> Bool {
+        lhs.id == rhs.id
+    }
+}
+
+class File: Hashable, Identifiable {
+    let id = UUID()
+    let url: URL
+    weak var parent: Directory?
+    
+    static let allowedExtensions = ["jpg", "png", "gif", "webp"]
+    
+    init(url: URL, parent: Directory) {
+        self.url = url
+        self.parent = parent
+    }
+    
+    func load() -> NSImage? {
+        return NSImage(contentsOf: self.url)
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
+    static func == (lhs: File, rhs: File) -> Bool {
+        lhs.id == rhs.id
+    }
+}
