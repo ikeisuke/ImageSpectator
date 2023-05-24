@@ -9,13 +9,11 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var directoryLoader = DirectoryLoader(directoryURL: nil)
-    @State private var selectedImage: Image? = nil
-    @State private var selectedImageItems: [DirectoryItem] = []
     @State private var searchText = ""
     
     @State private var directory: Directory? = nil
     @State private var images: [File] = []
-    @State private var selectedFileURL: URL? = nil
+    @State private var selected: File? = nil
     private var loading: Bool = false
 
     var body: some View {
@@ -35,6 +33,15 @@ struct ContentView: View {
                                     directory = Directory(url: url, parent: nil)
                                     if let dir = directory {
                                         dir.load()
+                                        if dir.hasDirectory() {
+                                            images = dir.directories.compactMap { directory -> File? in
+                                                directory.load()
+                                                if directory.hasFile() {
+                                                    return directory.files.first
+                                                }
+                                                return nil
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -70,7 +77,7 @@ struct ContentView: View {
                                             HStack {
                                                 Image(systemName: directory.isOpened ? "chevron.down" : "chevron.right")
                                                 Text(directory.url.lastPathComponent)
-                                                    .foregroundColor(selectedFileURL == directory.url ? .blue : .white)  // Change this line
+                                                    .foregroundColor(selected?.url == directory.url ? .blue : .white)  // Change this line
                                                     .focusable()
                                             }.padding().onTapGesture {
                                                 if (!directory.hasFile()) {
@@ -80,21 +87,17 @@ struct ContentView: View {
                                                     directory.isOpened = !directory.isOpened
                                                     images = directory.files
                                                 }
-                                                self.selectedFileURL = directory.url
-                                                self.selectedImage = nil
+                                                self.selected = nil
                                             }
                                             if directory.isOpened {
                                                 ForEach(directory.files, id: \.id) { file in
                                                     HStack {
                                                         Text(file.url.lastPathComponent)
-                                                            .foregroundColor(selectedFileURL == file.url ? .blue : .white)  // Change this line
+                                                            .foregroundColor(selected?.url == file.url ? .blue : .white)  // Change this line
                                                             .focusable()
                                                     }
                                                     .onTapGesture {
-                                                        if let image = NSImage(contentsOf: file.url) {
-                                                            self.selectedImage = Image(nsImage: image)
-                                                            self.selectedFileURL = file.url
-                                                        }
+                                                        self.selected = file
                                                         images = []
                                                     }
                                                 }
@@ -107,18 +110,33 @@ struct ContentView: View {
                     }.frame(width: 200)
                     if loading {
                         ProgressView()
-                    } else if let image = selectedImage{
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
+                    } else if let file = selected{
+                        VStack {
+                            HStack {
+                                Button(" < ") {
+                                    if let f = file.prev() {
+                                        selected = f
+                                    }
+                                }.padding()
+                                Button(" > ") {
+                                    if let f = file.next() {
+                                        selected = f
+                                    }
+                                }.padding()
+                            }
+                            Spacer()
+                            if let image = NSImage(contentsOf: file.url) {
+                                Image(nsImage: image)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                            }
+                            Spacer()
+                        }
                     } else if !images.isEmpty {
                         ScrollView {
                             LazyVGrid(columns: Array(repeating: GridItem(.fixed(300)), count: 4)) {
                                 ForEach(images.filter({
-                                    if let parent = $0.parent {
-                                        return parent.url.lastPathComponent.contains(searchText)
-                                    }
-                                    return searchText.isEmpty
+                                    return $0.parent.url.lastPathComponent.contains(searchText) || searchText.isEmpty
                                 }), id: \.id) { imageFile in
                                     AsyncImage(url: imageFile.url) { image in
                                         image
@@ -129,6 +147,8 @@ struct ContentView: View {
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: 300, height: 300)
                                     .onTapGesture {
+                                        selected = imageFile
+                                        images = []
                                     }
                                 }
                             }

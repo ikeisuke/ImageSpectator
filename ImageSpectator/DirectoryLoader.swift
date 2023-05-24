@@ -111,6 +111,24 @@ class Directory: Hashable, Identifiable {
         }
     }
     
+    func next(file: File) -> File? {
+        if let index = files.firstIndex(of: file) {
+            if files.indices.contains(index + 1) {
+                return files[index + 1]
+            }
+        }
+        return nil
+    }
+    
+    func prev(file: File) -> File? {
+        if let index = files.firstIndex(of: file) {
+            if files.indices.contains(index - 1) {
+                return files[index - 1]
+            }
+        }
+        return nil
+    }
+    
     func hasDirectory() -> Bool {
         return !directories.isEmpty
     }
@@ -131,7 +149,7 @@ class Directory: Hashable, Identifiable {
 class File: Hashable, Identifiable {
     let id = UUID()
     let url: URL
-    weak var parent: Directory?
+    let parent: Directory
     
     static let allowedExtensions = ["jpg", "png", "gif", "webp"]
     
@@ -142,6 +160,14 @@ class File: Hashable, Identifiable {
     
     func load() -> NSImage? {
         return NSImage(contentsOf: self.url)
+    }
+    
+    func next() -> File? {
+        return parent.next(file: self)
+    }
+    
+    func prev() -> File? {
+        return parent.prev(file: self)
     }
     
     func hash(into hasher: inout Hasher) {
