@@ -21,12 +21,5 @@ struct ImageSpectatorApp: App {
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
-        if let window = NSApplication.shared.windows.first, let screen = NSScreen.main {
-            let screenSize = screen.visibleFrame.size
-            let newWidth = 250 + screenSize.height * 3 / 4
-            let newHeight = screenSize.height
-            let newSize = CGSize(width: newWidth, height: newHeight)
-            window.setContentSize(newSize)
-        }
     }
 }

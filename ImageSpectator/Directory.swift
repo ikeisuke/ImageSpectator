@@ -48,8 +48,8 @@ class Directory: Hashable, Identifiable {
         }
     }
     
-    func sorted(sort: String) -> [Directory] {
-        if sort == "time" {
+    func sortedDirectories(sort: DirectorySortType) -> [Directory] {
+        if sort.rawValue == "time" {
             return directories.sorted{
                 let creationDate1 = try? $0.url.resourceValues(forKeys: [.creationDateKey]).creationDate
                 let creationDate2 = try? $1.url.resourceValues(forKeys: [.creationDateKey]).creationDate
@@ -58,7 +58,12 @@ class Directory: Hashable, Identifiable {
         } else {
             return directories.sorted(by: { $0.url.lastPathComponent < $1.url.lastPathComponent })
         }
-     }
+    }
+    
+    func sortedFiles() -> [File] {
+        load()
+        return files
+    }
     
     func next(file: File) -> File? {
         if let index = files.firstIndex(of: file) {
@@ -107,12 +112,28 @@ class File: Hashable, Identifiable {
         self.parent = parent
     }
     
-    func next() -> File? {
-        return parent.next(file: self)
+    func next(num: Int = 1) -> File? {
+        var file = self
+        for _ in 0 ..< num {
+            if let tmp = parent.next(file: file) {
+                file = tmp
+            } else {
+                return nil
+            }
+        }
+        return file
     }
     
-    func prev() -> File? {
-        return parent.prev(file: self)
+    func prev(num: Int = 1) -> File? {
+        var file = self
+        for _ in 0 ..< num {
+            if let tmp = parent.prev(file: file) {
+                file = tmp
+            } else {
+                return nil
+            }
+        }
+        return file
     }
     
     func hash(into hasher: inout Hasher) {

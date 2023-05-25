@@ -8,74 +8,41 @@
 import SwiftUI
 
 struct DirectoryView: View {
-    @ObservedObject var directoryLoader: DirectoryLoader
-    @ObservedObject var directoryItem: DirectoryItem
-    @Binding var selectedImage: Image?
-    @Binding var selectedFileURL: URL?
-    @Binding var selectedImageItems: [DirectoryItem]
+    @ObservedObject var state: AppState
 
     var body: some View {
-        if directoryItem.isDirectory {
-            DisclosureGroup(isExpanded: $directoryItem.isOpened, content: {
-                LazyVStack {
-                    ForEach(directoryItem.children) { childItem in
-                        DirectoryView(directoryLoader: directoryLoader,
-                                      directoryItem: childItem,
-                                      selectedImage: $selectedImage,
-                                      selectedFileURL: $selectedFileURL,
-                                      selectedImageItems: $selectedImageItems)
-                    }
-                }
-            }, label: {
-                Text(directoryItem.name)
-            })
-            .onTapGesture {
-                selectedImage = nil
-                if directoryItem.name == "ALL" {
-                    loadFirstImageFromSubDirectories(directoryItem: directoryItem)
-                } else {
-                    if directoryItem.children.isEmpty {
-                        directoryLoader.fetchContents(for: directoryItem)
-                        directoryItem.isOpened = true
-                        loadImageItems(directoryItem: directoryItem)
-                    } else {
-                        directoryItem.isOpened.toggle()
-                        if directoryItem.isOpened {
-                            loadImageItems(directoryItem: directoryItem)
+        ScrollView {
+            if let root = state.rootDirectory {
+                if root.hasDirectory() {
+                    LazyVGrid (columns: Array(repeating: GridItem(.flexible()), count: 1)){
+                        ForEach(root.sortedDirectories(sort: state.directorySortType).filter({$0.url.lastPathComponent.contains(state.searchText) || state.searchText.isEmpty}), id: \.id) { directory in
+                            VStack {
+                                if let file = directory.sortedFiles().first {
+                                    AsyncImage(url: file.url) { image in
+                                        image
+                                            .resizable()
+                                    } placeholder: {
+                                        ProgressView()
+                                    }
+                                    .aspectRatio(contentMode: .fit)
+                                    Text(directory.url.lastPathComponent)
+                                        .foregroundColor(state.selectedDirectory == directory ? .blue : .white)
+                                }
+                            }
+                            .padding()
+                            .onTapGesture {
+                                state.selectedDirectory = directory
+                            }
                         }
                     }
                 }
             }
-        } else {
-            Text(directoryItem.name)
-                .foregroundColor(selectedFileURL == directoryItem.url ? .blue : .white)  // Change this line
-                .focusable()
-                .onTapGesture {
-                    if let image = NSImage(contentsOf: directoryItem.url) {
-                        self.selectedImage = Image(nsImage: image)
-                        self.selectedFileURL = directoryItem.url
-                        selectedImageItems = []
-                    }
-                }
-        }
-    }
-    private func loadImageItems(directoryItem: DirectoryItem) {
-        if directoryItem.name == "ALL" {
-            loadFirstImageFromSubDirectories(directoryItem: directoryItem)
-        } else {
-            directoryLoader.fetchContents(for: directoryItem)
-            selectedImageItems = directoryItem.children
-        }
-    }
-
-    private func loadFirstImageFromSubDirectories(directoryItem: DirectoryItem) {
-        selectedImageItems = directoryItem.children.compactMap { directory -> DirectoryItem? in
-            directoryLoader.preload(directoryItem: directory)
-            let files = directory.children
-            if let firstImageItem = files.first {
-                return firstImageItem
-            }
-            return nil
-        }
+        }.frame(minWidth: 200)
     }
 }
+
+//struct DirectoryView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        DirectoryView()
+//    }
+//}
