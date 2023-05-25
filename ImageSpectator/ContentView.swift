@@ -8,154 +8,201 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var directoryLoader = DirectoryLoader(directoryURL: nil)
-    @State private var searchText = ""
+    private static let sortOptions = ["name", "time"]
     
-    @State private var directory: Directory? = nil
-    @State private var images: [File] = []
-    @State private var selected: File? = nil
-    private var loading: Bool = false
-
+    @State private var searchText = ""
+    @State private var rootDirectory: Directory? = nil
+    @State private var selectedDirImages: [File] = []
+    @State private var selectedImage: File? = nil
+    @State private var selectedTitle: String = ""
+    @State private var selectedSort: String = sortOptions[0]
+    
     var body: some View {
-        if directoryLoader.isLoading {
-            ProgressView()
-        } else {
-            GeometryReader { geometry in
-                HSplitView {
-                    VSplitView {
-                        Button("Select Directory") {
-                            let openPanel = NSOpenPanel()
-                            openPanel.canChooseDirectories = true
-                            openPanel.canChooseFiles = false
-                            openPanel.allowsMultipleSelection = false
-                            openPanel.begin { (result) in
-                                if result == NSApplication.ModalResponse.OK, let url = openPanel.url {
-                                    directory = Directory(url: url, parent: nil)
-                                    if let dir = directory {
-                                        dir.load()
+        GeometryReader { geometry in
+            HSplitView {
+                VSplitView {
+                    Button("Select Directory") {
+                        let openPanel = NSOpenPanel()
+                        openPanel.canChooseDirectories = true
+                        openPanel.canChooseFiles = false
+                        openPanel.allowsMultipleSelection = false
+                        if openPanel.runModal() == .OK {
+                            if  let url = openPanel.url {
+                                rootDirectory = Directory(url: url, parent: nil)
+                                if let dir = rootDirectory {
+                                    dir.load()
+                                    if dir.hasDirectory() {
+                                        selectedTitle = "TOP"
+                                    }
+                                }
+                            }
+                        }
+                    }.padding()
+                    if rootDirectory == nil {
+                        Text("Please select a directory").padding()
+                    } else {
+                        Picker("Sort", selection: $selectedSort) {
+                                        ForEach(Self.sortOptions, id: \.self) { option in
+                                            Text(option).tag(option)
+                                        }
+                                    }
+                                    .pickerStyle(MenuPickerStyle())
+                                    .padding()
+                        TextField("Search", text: $searchText).padding()
+                    }
+                    ScrollView {
+                        if let dir = rootDirectory{
+                            LazyVGrid (columns: Array(repeating: GridItem(.flexible()), count: 1)){
+                                HStack {
+                                    Image("chevron.down")
+                                    Text("TOP")
+                                    Spacer()
+                                }.padding()
+                                    .onTapGesture {
                                         if dir.hasDirectory() {
-                                            images = dir.directories.compactMap { directory -> File? in
-                                                directory.load()
-                                                if directory.hasFile() {
-                                                    return directory.files.first
+                                            selectedImage = nil
+                                            selectedDirImages = []
+                                            selectedTitle = "TOP"
+                                            
+                                        }
+                                    }
+                                if dir.hasDirectory() {
+                                    ForEach(dir.sorted(sort: selectedSort).filter({$0.url.lastPathComponent.contains(searchText) || searchText.isEmpty})) { directory in
+                                        HStack {
+                                            Image(systemName: directory.isOpened ? "chevron.down" : "chevron.right")
+                                            Text(directory.url.lastPathComponent)
+                                                .foregroundColor(selectedImage?.parent.url == directory.url || selectedDirImages.first?.parent.url == directory.url ? .blue : .white)
+                                        }.padding().onTapGesture {
+                                            directory.load()
+                                            directory.isOpened = !directory.isOpened
+                                            selectedDirImages = directory.files
+                                            selectedImage = nil
+                                            selectedTitle = directory.url.lastPathComponent
+                                        }
+                                        if directory.isOpened {
+                                            ForEach(directory.files, id: \.id) { file in
+                                                HStack {
+                                                    Text(file.url.lastPathComponent)
+                                                        .foregroundColor(selectedImage?.url == file.url ? .blue : .white)  // Change this line
+                                                        .focusable()
                                                 }
-                                                return nil
+                                                .onTapGesture {
+                                                    selectedImage = file
+                                                    selectedTitle = file.parent.url.lastPathComponent
+                                                }
                                             }
                                         }
                                     }
                                 }
-                            }
-                        }.padding()
-                        if directory == nil {
-                            Text("Please select a directory").padding()
-                        } else {
-                            TextField("Search", text: $searchText).padding()
+                            }.padding()
                         }
-                        ScrollView {
-                            if let dir = directory{
-                                LazyVGrid (columns: Array(repeating: GridItem(.flexible()), count: 1)){
-                                    HStack {
-                                        Image("chevron.down")
-                                        Text("TOP")
-                                        Spacer()
-                                    }.padding()
-                                    .onTapGesture {
-                                        if let dir = directory {
-                                            if dir.hasDirectory() {
-                                                images = dir.directories.compactMap { directory -> File? in
-                                                    directory.load()
-                                                    if directory.hasFile() {
-                                                        return directory.files.first
-                                                    }
-                                                    return nil
-                                                }
-                                            }
-                                        }
-                                    }
-                                    if dir.hasDirectory() {
-                                        ForEach(dir.directories.filter({$0.url.lastPathComponent.contains(searchText) || searchText.isEmpty})) { directory in
-                                            HStack {
-                                                Image(systemName: directory.isOpened ? "chevron.down" : "chevron.right")
-                                                Text(directory.url.lastPathComponent)
-                                                    .foregroundColor(selected?.url == directory.url ? .blue : .white)  // Change this line
-                                                    .focusable()
-                                            }.padding().onTapGesture {
-                                                if (!directory.hasFile()) {
-                                                    directory.load()
-                                                }
-                                                if (directory.hasFile()) {
-                                                    directory.isOpened = !directory.isOpened
-                                                    images = directory.files
-                                                }
-                                                self.selected = nil
-                                            }
-                                            if directory.isOpened {
-                                                ForEach(directory.files, id: \.id) { file in
-                                                    HStack {
-                                                        Text(file.url.lastPathComponent)
-                                                            .foregroundColor(selected?.url == file.url ? .blue : .white)  // Change this line
-                                                            .focusable()
-                                                    }
-                                                    .onTapGesture {
-                                                        self.selected = file
-                                                        images = []
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }.padding()
-                            }
-                        }.frame(width: 200)
                     }.frame(width: 200)
-                    if loading {
-                        ProgressView()
-                    } else if let file = selected{
-                        VStack {
-                            HStack {
-                                Button(" < ") {
-                                    if let f = file.prev() {
-                                        selected = f
-                                    }
-                                }.padding()
-                                Button(" > ") {
-                                    if let f = file.next() {
-                                        selected = f
-                                    }
-                                }.padding()
-                            }
-                            Spacer()
-                            if let image = NSImage(contentsOf: file.url) {
+                }.frame(width: 200)
+                if let selected = selectedImage{
+                    VStack {
+                        HStack {
+                            Button(" < ") {
+                                if let file = selected.prev() {
+                                    selectedImage = file
+                                    selectedTitle = file.parent.url.lastPathComponent
+                                }
+                            }.padding()
+                            Text(selectedTitle).padding()
+                            Button(" > ") {
+                                if let file = selected.next() {
+                                    selectedImage = file
+                                    selectedTitle = file.parent.url.lastPathComponent
+                                }
+                            }.padding()
+                        }
+                        Spacer()
+                        if let image = NSImage(contentsOf: selected.url) {
+                            ZStack {
                                 Image(nsImage: image)
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
-                            }
-                            Spacer()
-                        }
-                    } else if !images.isEmpty {
-                        ScrollView {
-                            LazyVGrid(columns: Array(repeating: GridItem(.fixed(300)), count: 4)) {
-                                ForEach(images.filter({
-                                    return $0.parent.url.lastPathComponent.contains(searchText) || searchText.isEmpty
-                                }), id: \.id) { imageFile in
-                                    AsyncImage(url: imageFile.url) { image in
-                                        image
-                                            .resizable()
-                                    } placeholder: {
-                                        ProgressView()
-                                    }
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 300, height: 300)
-                                    .onTapGesture {
-                                        selected = imageFile
-                                        images = []
+                                GeometryReader { geometry in
+                                    HStack {
+                                        Color.blue.opacity(0.01)
+                                            .frame(width: geometry.size.width / 2, height: geometry.size.height)
+                                            .onTapGesture {
+                                            if let file = selected.prev() {
+                                                selectedImage = file
+                                                selectedTitle = file.parent.url.lastPathComponent
+                                            }
+                                        }
+                                        Color.green.opacity(0.01)
+                                            .frame(width: geometry.size.width / 2, height: geometry.size.height)
+                                            .onTapGesture {
+                                            if let file = selected.next() {
+                                                selectedImage = file
+                                                selectedTitle = file.parent.url.lastPathComponent
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
-                    } else {
-                        Color.gray
+                        Spacer()
                     }
+                } else if !selectedDirImages.isEmpty {
+                    ScrollView {
+                        LazyVGrid(columns: Array(repeating: GridItem(.fixed(300)), count: 4)) {
+                            ForEach(selectedDirImages, id: \.id) { file in
+                                AsyncImage(url: file.url) { image in
+                                    image
+                                        .resizable()
+                                } placeholder: {
+                                    ProgressView()
+                                }
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 300, height: 300)
+                                .onTapGesture {
+                                    selectedImage = file
+                                    selectedDirImages = []
+                                    selectedTitle = file.parent.url.lastPathComponent
+                                }
+                            }
+                        }
+                    }
+                } else if selectedTitle == "TOP" {
+                    if let dir = rootDirectory {
+                        ScrollView {
+                            LazyVGrid(columns: Array(repeating: GridItem(.fixed(300)), count: 4)) {
+                                ForEach(
+                                    dir.sorted(sort: selectedSort).compactMap { directory -> File? in
+                                        directory.load()
+                                        if directory.hasFile() {
+                                            return directory.files.first
+                                        }
+                                        return nil
+                                    }.filter({
+                                        return $0.parent.url.lastPathComponent.contains(searchText) || searchText.isEmpty
+                                    }), id: \.id) { file in
+                                        VStack {
+                                            AsyncImage(url: file.url) { image in
+                                                image
+                                                    .resizable()
+                                            } placeholder: {
+                                                ProgressView()
+                                            }
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(width: 300, height: 300)
+                                            .onTapGesture {
+                                                selectedDirImages = file.parent.files
+                                                selectedImage = nil
+                                                selectedTitle = "TOP"
+                                            }
+                                            Text(file.parent.url.lastPathComponent)
+                                        }
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 300, height: 330)
+                                    }
+                            }
+                        }
+                    }
+                } else {
+                    Color.gray
                 }
             }
         }

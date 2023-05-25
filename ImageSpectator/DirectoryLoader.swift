@@ -82,34 +82,50 @@ class Directory: Hashable, Identifiable {
     weak var parent: Directory?
     var isOpened: Bool = false
     
+    private var loaded: Bool = false
+    
     init(url: URL, parent: Directory?) {
         self.url = url
         self.parent = parent
     }
     
     func load() {
+        if loaded {
+            return
+        }
         let fileManager = FileManager.default
         do {
-            let contents = try fileManager.contentsOfDirectory(at: self.url, includingPropertiesForKeys: nil)
-            var tmpDirectories: [Directory] = []
+            let contents = try fileManager.contentsOfDirectory(at: self.url, includingPropertiesForKeys: [.contentAccessDateKey])
             var tmpFiles: [File] = [];
             for content in contents {
                 var isDirectory: ObjCBool = false
                 let exists = fileManager.fileExists(atPath: content.path, isDirectory: &isDirectory)
                 if exists {
                     if isDirectory.boolValue {
-                        tmpDirectories.append(Directory(url: content, parent: self))
+                        directories.append(Directory(url: content, parent: self))
                     } else if File.allowedExtensions.contains(content.pathExtension) {
                         tmpFiles.append(File(url: content, parent: self))
                     }
                 }
             }
-            directories = tmpDirectories.sorted(by: { $0.url.lastPathComponent < $1.url.lastPathComponent })
             files = tmpFiles.sorted(by: { $0.url.lastPathComponent < $1.url.lastPathComponent })
+            loaded = true
         } catch {
             print("Error while enumerating files \(url.path): \(error.localizedDescription)")
         }
     }
+    
+    func sorted(sort: String) -> [Directory] {
+        if sort == "time" {
+            return directories.sorted{
+                let creationDate1 = try? $0.url.resourceValues(forKeys: [.creationDateKey]).creationDate
+                let creationDate2 = try? $1.url.resourceValues(forKeys: [.creationDateKey]).creationDate
+                return creationDate1 ?? .distantPast > creationDate2 ?? .distantPast
+            }
+        } else {
+            return directories.sorted(by: { $0.url.lastPathComponent < $1.url.lastPathComponent })
+        }
+     }
     
     func next(file: File) -> File? {
         if let index = files.firstIndex(of: file) {
@@ -156,10 +172,6 @@ class File: Hashable, Identifiable {
     init(url: URL, parent: Directory) {
         self.url = url
         self.parent = parent
-    }
-    
-    func load() -> NSImage? {
-        return NSImage(contentsOf: self.url)
     }
     
     func next() -> File? {
