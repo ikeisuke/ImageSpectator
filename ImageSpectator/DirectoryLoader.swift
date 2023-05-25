@@ -14,7 +14,7 @@ class DirectoryLoader: ObservableObject {
     @Published var selectedImageItems: [DirectoryItem] = []
     @Published var isLoading = false
     
-    static let allowedExtensions = ["jpg", "png", "gif", "webp"]
+    static let allowedExtensions = ["jpg", "jpeg", "png", "gif", "webp"]
 
     init(directoryURL: URL?, opened:Bool = false) {
         if let dir = directoryURL {
@@ -50,7 +50,7 @@ class DirectoryLoader: ObservableObject {
             for fileURL in fileURLs {
                 var isDirectory: ObjCBool = false
                 let exists = fileManager.fileExists(atPath: fileURL.path, isDirectory: &isDirectory)
-                if exists && (isDirectory.boolValue || allowedExtensions.contains(fileURL.pathExtension)) {
+                if exists && (isDirectory.boolValue || allowedExtensions.contains(fileURL.pathExtension.lowercased())) {
                     let childItem = DirectoryItem(url: fileURL, name: fileURL.lastPathComponent, isDirectory: isDirectory.boolValue)
                     childItem.parent = parent
                     directoryItems.append(childItem)
@@ -103,7 +103,7 @@ class Directory: Hashable, Identifiable {
                 if exists {
                     if isDirectory.boolValue {
                         directories.append(Directory(url: content, parent: self))
-                    } else if File.allowedExtensions.contains(content.pathExtension) {
+                    } else if File.allowedExtensions.contains(content.pathExtension.lowercased()) {
                         tmpFiles.append(File(url: content, parent: self))
                     }
                 }
