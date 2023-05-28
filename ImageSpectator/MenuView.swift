@@ -12,90 +12,46 @@ struct MenuView: View {
     
     var body: some View {
         HStack {
-            TextField("Search", text: $state.searchText)
-                .padding()
-                .frame(maxWidth: 200)
-                .disabled(state.rootDirectory==nil)
-            Picker("Sort", selection: $state.directorySortType) {
-                ForEach(DirectorySortType.allCases, id: \.self) { option in
-                    Text(option.rawValue).tag(option)
-                }
-            }
-            .pickerStyle(MenuPickerStyle())
-            .padding()
-            .frame(maxWidth: 200)
-            .disabled(state.rootDirectory==nil)
             Spacer()
             if state.imageViewType == .horizontal {
-                Stepper(value: $state.imageViewHorizontalColumnSize, in: 1...2) {}
-                    .padding()
-                TextField("PerPage", value: $state.imageViewHorizontalColumnSize, formatter: NumberFormatter())
+                Text("Per Page:")
+                    .frame(maxWidth: 100)
+                Text(String(state.imageViewHorizontalColumnSize))
                     .multilineTextAlignment(.trailing)
-                    .padding()
                     .frame(maxWidth: 50)
-                    .disabled(true)
                 Stepper(value: $state.imageViewHorizontalColumnSize, in: 1...2) {}
-                    .padding()
-                Button(action: {
-                    switch state.imageViewHorizontalDirectionType {
-                    case .right:
-                        state.imageViewHorizontalDirectionType = .left
-                    case .left:
-                        state.imageViewHorizontalDirectionType = .right
-                    }
-                }) {
-                    switch state.imageViewHorizontalDirectionType {
-                    case .right:
-                        Text("right")
-                    case .left:
-                        Text("left")
+                Divider()
+                
+                Picker("Direction:", selection: $state.imageViewHorizontalDirectionType) {
+                    ForEach(ImageViewHorizontalDirectionType.allCases) { type in
+                        Text(type.rawValue.capitalized).tag(type)
                     }
                 }
+                .pickerStyle(SegmentedPickerStyle())
+                .frame(maxWidth: 250)
                 .disabled(state.rootDirectory==nil)
+                Divider()
             }
             if state.imageViewType == .grid {
-                TextField("GridSize", value: $state.imageViewGridColumnSize, formatter: NumberFormatter())
+                Text("Grid Columns:")
+                    .frame(maxWidth: 140)
+                Text(String(state.imageViewGridColumnSize))
                     .multilineTextAlignment(.trailing)
-                    .padding()
                     .frame(maxWidth: 50)
-                    .disabled(true)
-                Stepper(value: $state.imageViewGridColumnSize, in: 1...10) {}
-                    .padding()
+                Stepper(value: $state.imageViewGridColumnSize, in: 4...10) {}
+                Divider()
             }
-            Button(action: {
-                switch state.imageViewType {
-                case .grid:
-                    state.imageViewType = .vertical
-                case .vertical:
-                    state.imageViewType = .horizontal
-                case .horizontal:
-                    state.imageViewType = .grid
-                }
-            }) {
-                switch state.imageViewType {
-                case .grid:
-                    Text("grid")
-                case .vertical:
-                    Text("vertical")
-                case .horizontal:
-                    Text("horizontal")
+            
+            Picker("View Mode:", selection: $state.imageViewType) {
+                ForEach(ImageViewType.allCases) { type in
+                    Text(type.rawValue.capitalized).tag(type)
                 }
             }
+            .pickerStyle(SegmentedPickerStyle())
+            .frame(maxWidth: 300)
             .disabled(state.rootDirectory==nil)
-            Button("Select Directory") {
-                let openPanel = NSOpenPanel()
-                openPanel.canChooseDirectories = true
-                openPanel.canChooseFiles = false
-                openPanel.allowsMultipleSelection = false
-                if openPanel.runModal() == .OK {
-                    if  let url = openPanel.url {
-                        state.rootDirectory = Directory(url: url, parent: nil)
-                        if let dir = state.rootDirectory {
-                            dir.load()
-                        }
-                    }
-                }
-            }.padding()
+            Spacer()
+                .frame(width: 10)
         }
         if state.rootDirectory == nil {
             Spacer()

@@ -15,19 +15,26 @@ struct ContentView: View {
     @State private var rootDirectory: Directory? = nil
     @State private var currentDirectory: Directory? = nil
     
-    @ObservedObject var state: AppState = AppState()
+    @ObservedObject var state: AppState
     
     var body: some View {
         GeometryReader { geometry in
-            VStack {
-                MenuView(state: state)
-                    .frame(height:24)
-                if state.rootDirectory != nil {
-                    HSplitView {
-                        DirectoryView(state: state)
-                        FileView(state: state)
+            ZStack {
+                Color.white
+                    .opacity(0.01)
+                    .onTapGesture {
+                        state.searchTextEditing = false
                     }
-               }
+                VStack {
+                    MenuView(state: state)
+                        .frame(maxHeight:13)
+                    if state.rootDirectory != nil {
+                        HSplitView {
+                            DirectoryView(state: state)
+                            FileView(state: state)
+                        }
+                    }
+                }
             }
         }
     }

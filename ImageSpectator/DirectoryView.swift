@@ -11,33 +11,95 @@ struct DirectoryView: View {
     @ObservedObject var state: AppState
 
     var body: some View {
-        ScrollView {
-            if let root = state.rootDirectory {
-                if root.hasDirectory() {
-                    LazyVGrid (columns: Array(repeating: GridItem(.flexible()), count: 1)){
-                        ForEach(root.sortedDirectories(sort: state.directorySortType).filter({$0.url.lastPathComponent.contains(state.searchText) || state.searchText.isEmpty}), id: \.id) { directory in
-                            VStack {
-                                if let file = directory.sortedFiles().first {
-                                    AsyncImage(url: file.url) { image in
-                                        image
-                                            .resizable()
-                                    } placeholder: {
-                                        ProgressView()
+        VStack {
+            Divider()
+            HStack {
+                Spacer()
+                Text("Search Text")
+                Spacer()
+            }
+            HStack {
+                Spacer()
+                if state.searchTextEditing {
+                    TextField("Search", text: $state.searchText){
+                        state.searchTextEditing = false
+                    }
+                    .multilineTextAlignment(.center)
+                    .disabled(state.rootDirectory==nil)
+                    .keyboardShortcut(KeyEquivalent("\r"), modifiers: [])
+                } else {
+                    let text = state.searchText != "" ? state.searchText : "未設定"
+                    Text(text)
+                        .frame(maxWidth: 200)
+                        .onTapGesture {
+                            state.searchTextEditing = true
+                        }
+                }
+                Spacer()
+            }
+            Divider()
+            HStack {
+                Spacer()
+                Text("Change Sort")
+                Spacer()
+            }
+            HStack {
+                Spacer()
+                Picker("", selection: $state.directorySortType) {
+                    ForEach(DirectorySortType.allCases, id: \.self) { option in
+                        Text(option.rawValue).tag(option)
+                    }
+                }
+                .multilineTextAlignment(.center)
+                .pickerStyle(MenuPickerStyle())
+                .disabled(state.rootDirectory==nil)
+                Spacer()
+            }
+            Divider()
+            ScrollViewReader { value in
+                ScrollView {
+                    if let root = state.rootDirectory {
+                        if root.hasDirectory() {
+                            let dirs = root.sortedDirectories(sort: state.directorySortType, filter: state.searchText)
+                            LazyVGrid (columns: Array(repeating: GridItem(.flexible()), count: 1)){
+                                ForEach(dirs.indices, id: \.self) { i in
+                                    let dir = dirs[i]
+                                    VStack {
+                                        if let file = dir.sortedFiles().first {
+                                            AsyncImage(url: file.url) { image in
+                                                image
+                                                    .resizable()
+                                            } placeholder: {
+                                                ProgressView()
+                                            }
+                                            .aspectRatio(contentMode: .fill)
+                                            Text(dir.url.lastPathComponent)
+                                                .foregroundColor(state.selectedDirectory == dir ? .blue : .white)
+                                        }
                                     }
-                                    .aspectRatio(contentMode: .fit)
-                                    Text(directory.url.lastPathComponent)
-                                        .foregroundColor(state.selectedDirectory == directory ? .blue : .white)
+                                    .id(i)
+                                    .padding()
+                                    .frame(height: 260)
+                                    .onTapGesture {
+                                        state.selectedDirectory = dir
+                                        state.selectedFile = state.selectedDirectory?.files.first
+                                        state.searchTextEditing = false
+                                    }
                                 }
                             }
-                            .padding()
-                            .onTapGesture {
-                                state.selectedDirectory = directory
+                            .onAppear {
+                                if let dir = state.selectedDirectory {
+                                    withAnimation {
+                                        value.scrollTo(dirs.firstIndex(of: dir))
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
-        }.frame(minWidth: 200)
+        }
+        .frame(maxWidth: 200)
     }
 }
 

@@ -105,16 +105,16 @@
 		FB9457A02A19891100016A1D /* ImageSpectator */ = {
 			isa = PBXGroup;
 			children = (
+				FB9457AA2A19891300016A1D /* ImageSpectator.entitlements */,
+				FBE1B8822A22F5DF00D8F177 /* AppState.swift */,
+				FB9457A32A19891100016A1D /* ContentView.swift */,
+				FBE1B87A2A1FAC2800D8F177 /* Directory.swift */,
+				FBE1B87E2A1FB47500D8F177 /* DirectoryView.swift */,
 				FBE1B8802A1FC0D600D8F177 /* FileView.swift */,
 				FB9457A12A19891100016A1D /* ImageSpectatorApp.swift */,
-				FB9457A32A19891100016A1D /* ContentView.swift */,
-				FBE1B87E2A1FB47500D8F177 /* DirectoryView.swift */,
-				FB9457A52A19891300016A1D /* Assets.xcassets */,
-				FB9457AA2A19891300016A1D /* ImageSpectator.entitlements */,
-				FB9457A72A19891300016A1D /* Preview Content */,
-				FBE1B87A2A1FAC2800D8F177 /* Directory.swift */,
 				FBE1B87C2A1FADA300D8F177 /* MenuView.swift */,
-				FBE1B8822A22F5DF00D8F177 /* AppState.swift */,
+				FB9457A52A19891300016A1D /* Assets.xcassets */,
+				FB9457A72A19891300016A1D /* Preview Content */,
 			);
 			path = ImageSpectator;
 			sourceTree = "<group>";

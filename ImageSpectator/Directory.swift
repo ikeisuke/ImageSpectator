@@ -48,16 +48,18 @@ class Directory: Hashable, Identifiable {
         }
     }
     
-    func sortedDirectories(sort: DirectorySortType) -> [Directory] {
+    func sortedDirectories(sort: DirectorySortType, filter: String) -> [Directory] {
+        var result: [Directory] = []
         if sort.rawValue == "time" {
-            return directories.sorted{
+            result = directories.sorted{
                 let creationDate1 = try? $0.url.resourceValues(forKeys: [.creationDateKey]).creationDate
                 let creationDate2 = try? $1.url.resourceValues(forKeys: [.creationDateKey]).creationDate
                 return creationDate1 ?? .distantPast > creationDate2 ?? .distantPast
             }
         } else {
-            return directories.sorted(by: { $0.url.lastPathComponent < $1.url.lastPathComponent })
+            result = directories.sorted(by: { $0.url.lastPathComponent < $1.url.lastPathComponent })
         }
+        return result.filter({filter.isEmpty || $0.url.lastPathComponent.contains(filter)})
     }
     
     func sortedFiles() -> [File] {
@@ -66,16 +68,15 @@ class Directory: Hashable, Identifiable {
     }
     
     func next(file: File) -> File? {
-        if let index = files.firstIndex(of: file) {
+        if let index = files.firstIndex(where: { $0.url == file.url }) {
             if files.indices.contains(index + 1) {
                 return files[index + 1]
             }
         }
         return nil
     }
-    
     func prev(file: File) -> File? {
-        if let index = files.firstIndex(of: file) {
+        if let index = files.firstIndex(where: { $0.url == file.url }) {
             if files.indices.contains(index - 1) {
                 return files[index - 1]
             }
@@ -96,11 +97,11 @@ class Directory: Hashable, Identifiable {
     }
     
     static func == (lhs: Directory, rhs: Directory) -> Bool {
-        lhs.id == rhs.id
+        lhs.url == rhs.url
     }
 }
 
-class File: Hashable, Identifiable {
+class File: Hashable, Identifiable, Equatable {
     let id = UUID()
     let url: URL
     let parent: Directory
@@ -110,6 +111,13 @@ class File: Hashable, Identifiable {
     init(url: URL, parent: Directory) {
         self.url = url
         self.parent = parent
+    }
+    
+    func index() -> Int {
+        if let index = parent.files.firstIndex(of: self) {
+            return index;
+        }
+        return -1
     }
     
     func next(num: Int = 1) -> File? {
@@ -141,6 +149,6 @@ class File: Hashable, Identifiable {
     }
     
     static func == (lhs: File, rhs: File) -> Bool {
-        lhs.id == rhs.id
+        lhs.url == rhs.url
     }
 }

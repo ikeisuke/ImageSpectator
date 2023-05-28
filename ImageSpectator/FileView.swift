@@ -13,24 +13,84 @@ struct FileView: View {
     
     var body: some View {
         VStack {
-            GeometryReader { geometry in
-                let itemSize = (geometry.size.width - 10 * (CGFloat(state.imageViewVertivalColumnSize) - 1)) / CGFloat(state.imageViewVertivalColumnSize)
-                if let files = state.selectedDirectory?.sortedFiles() {
-                    if state.imageViewType == .grid || state.imageViewType == .vertical {
-                        ScrollView {
-                            LazyVGrid(columns: Array(repeating: GridItem(.fixed(itemSize)), count: state.imageViewVertivalColumnSize)) {
-                                ForEach(files, id: \.id) { file in
-                                    VStack {
-                                        AsyncImage(url: file.url) { image in
-                                            image
-                                                .resizable()
-                                        } placeholder: {
-                                            ProgressView()
+            ZStack {
+                GeometryReader { geometry in
+                    if state.imageViewType == .grid {
+                        let width = (geometry.size.width - 10 * (CGFloat(state.imageViewVerticalColumnSize) - 1)) / CGFloat(state.imageViewVerticalColumnSize) - 20
+                        if let dir = state.selectedDirectory {
+                            ScrollViewReader { value in
+                                let files = dir.sortedFiles()
+                                let index = state.selectedFile?.index()
+                                ScrollView {
+                                    LazyVGrid(columns: Array(repeating: GridItem(.fixed(width)), count: state.imageViewVerticalColumnSize)) {
+                                        ForEach(files.indices, id: \.self) { i in
+                                            let file = files[i]
+                                            VStack {
+                                                AsyncImage(url: file.url) { image in
+                                                    image
+                                                        .resizable()
+                                                } placeholder: {
+                                                    ProgressView()
+                                                }
+                                                .aspectRatio(contentMode: .fit)
+                                            }
+                                            .id(i)
+                                            .padding()
+                                            .border(Color.blue, width: i == index ? 4 : 0)
+                                            .frame(maxWidth: width)
+                                            .onTapGesture {
+                                                state.imageViewType = .horizontal
+                                                state.selectedFile = file
+                                                state.searchTextEditing = false
+                                            }
                                         }
-                                        .aspectRatio(contentMode: .fit)
                                     }
-                                    .padding()
-                                    .frame(maxWidth: itemSize, maxHeight: geometry.size.height)
+                                }.onAppear{
+                                    if let file = state.selectedFile {
+                                        withAnimation{
+                                            value.scrollTo(files.firstIndex(of: file))
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } else if state.imageViewType == .vertical {
+                        if let dir = state.selectedDirectory {
+                            ScrollViewReader { value in
+                                let files = dir.sortedFiles()
+                                ScrollView {
+                                    LazyVGrid(columns: Array(repeating: GridItem(.fixed(geometry.size.width - 20)), count: 1)) {
+                                        ForEach(files.indices, id: \.self) { i in
+                                            let file = files[i]
+                                            VStack {
+                                                AsyncImage(url: file.url) { image in
+                                                    image
+                                                        .resizable()
+                                                } placeholder: {
+                                                    ProgressView()
+                                                }
+                                                .aspectRatio(contentMode: .fit)
+                                            }
+                                            .id(i)
+                                            .padding()
+                                            .frame(height: geometry.size.height)
+                                            .onTapGesture {
+                                                if let next = file.next() {
+                                                    state.selectedFile = next
+                                                    withAnimation {
+                                                        value.scrollTo(files.firstIndex(of: next))
+                                                    }
+                                                }
+                                                state.searchTextEditing = false
+                                            }
+                                        }
+                                    }
+                                }.onAppear{
+                                    if let file = state.selectedFile {
+                                        withAnimation{
+                                            value.scrollTo(files.firstIndex(of: file))
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -69,6 +129,7 @@ struct FileView: View {
                                                     if let file = state.imageViewHorizontalDirectionType == .right ? selected.prev(num: state.imageViewHorizontalColumnSize) : selected.next(num: state.imageViewHorizontalColumnSize) {
                                                         state.selectedFile = file
                                                     }
+                                                    state.searchTextEditing = false
                                                 }
                                             Color.green.opacity(0.01)
                                                 .frame(width: geometry.size.width / 2, height: geometry.size.height)
@@ -76,6 +137,7 @@ struct FileView: View {
                                                     if let file = state.imageViewHorizontalDirectionType == .left ? selected.prev(num: state.imageViewHorizontalColumnSize) : selected.next(num: state.imageViewHorizontalColumnSize) {
                                                         state.selectedFile = file
                                                     }
+                                                    state.searchTextEditing = false
                                                 }
                                         }
                                     }
@@ -85,6 +147,19 @@ struct FileView: View {
                     }
                 }
             }
+            Button("next") {
+                if let file = state.selectedFile {
+                    var num = 1
+                    if state.imageViewType == .horizontal {
+                        num = state.imageViewHorizontalColumnSize
+                    }
+                    if let file = file.next(num: num) {
+                        state.selectedFile = file
+                    }
+                }
+            }
+            .hidden()
+            .keyboardShortcut(.space, modifiers: [])
         }
     }
 }

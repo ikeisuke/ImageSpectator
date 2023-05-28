@@ -9,17 +9,29 @@ import SwiftUI
 
 @main
 struct ImageSpectatorApp: App {
-    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-
+    private let state: AppState = AppState()
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(state: state)
         }
         .windowStyle(HiddenTitleBarWindowStyle())
-    }
-}
-
-class AppDelegate: NSObject, NSApplicationDelegate {
-    func applicationDidFinishLaunching(_ notification: Notification) {
+        .commands {
+            CommandGroup(replacing: CommandGroupPlacement.newItem) {
+                Button("Select Directory") {
+                    let openPanel = NSOpenPanel()
+                    openPanel.canChooseDirectories = true
+                    openPanel.canChooseFiles = false
+                    openPanel.allowsMultipleSelection = false
+                    if openPanel.runModal() == .OK {
+                        if  let url = openPanel.url {
+                            state.rootDirectory = Directory(url: url, parent: nil)
+                            if let dir = state.rootDirectory {
+                                dir.load()
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
