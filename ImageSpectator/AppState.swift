@@ -24,7 +24,7 @@ enum DirectorySortType: String, CaseIterable {
 enum CodingKeys {
     case rootDirectory, searchText, imageViewType, imageViewGridColumnSize,
          imageViewVertivalColumnSize, imageViewHorizontalColumnSize, imageViewHorizontalDirectionType,
-         directorySortType, selectedDirectory, selectedFile
+         directorySortType, selectedDirectory, selectedFile, currentDirectory
 }
 
 class AppState: ObservableObject {
@@ -41,7 +41,6 @@ class AppState: ObservableObject {
                     let bookmark = try dir.url.bookmarkData(options: [.withSecurityScope, .securityScopeAllowOnlyReadAccess],
                                                             includingResourceValuesForKeys: nil,
                                                             relativeTo: nil)
-                    
                     UserDefaults.standard.set(bookmark, forKey: "rootDirectory")
                 } catch {
                     print("Failed to create bookmark: \(error)")
@@ -118,6 +117,17 @@ class AppState: ObservableObject {
             }
         }
     }
+    @Published var currentDirectory: Directory? {
+        didSet {
+            if currentDirectory == oldValue {
+                return
+            }
+            if let dir = currentDirectory {
+                UserDefaults.standard.set(dir.url.absoluteString, forKey: "currentDirectory")
+                dir.load()
+            }
+        }
+    }
     @Published var autoPlay: Bool = false
     @Published var autoPlaySpeed: Float = 1.0
     init() {
@@ -172,9 +182,14 @@ class AppState: ObservableObject {
                 directorySortType = type
             }
         }
+        if let saved = userDefaults.string(forKey: "currentDirectory") {
+            if let url = URL(string: saved) {
+                currentDirectory = Directory(url: url, parent: nil)
+            }
+        }
         if let saved = userDefaults.string(forKey: "selectedDirectory") {
             if let url = URL(string: saved) {
-            selectedDirectory = Directory(url: url, parent: rootDirectory)
+            selectedDirectory = Directory(url: url, parent: nil)
                 if let dir = selectedDirectory {
                     dir.load()
                     if let saved = userDefaults.string(forKey: "selectedFile") {

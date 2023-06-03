@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+let icon = NSWorkspace.shared.icon(forFile: NSHomeDirectory())
+
 struct DirectoryView: View {
     @ObservedObject var state: AppState
     
@@ -60,34 +62,73 @@ struct DirectoryView: View {
                 Spacer()
             }
             Divider()
+            HStack {
+                Spacer().frame(width: 20)
+                Button(action: {
+                    if let dir = state.currentDirectory {
+                        if let parent = dir.getParent() {
+                            state.currentDirectory = parent
+                        }
+                    }
+                }) {
+                    Image(systemName: "arrow.left")
+                }
+                .disabled(state.currentDirectory == state.rootDirectory)
+                Spacer()
+            }
+            Divider()
             ScrollViewReader { value in
                 ScrollView {
-                    if let root = state.rootDirectory {
-                        if root.hasDirectory() {
-                            let dirs = root.sortedDirectories(sort: state.directorySortType, filter: state.searchText)
+                    if let current = state.currentDirectory {
+                        if current.hasDirectory() {
+                            let dirs = current.sortedDirectories(sort: state.directorySortType, filter: state.searchText)
                             LazyVGrid (columns: Array(repeating: GridItem(.flexible()), count: 1)){
                                 ForEach(dirs.indices, id: \.self) { i in
                                     let dir = dirs[i]
-                                    VStack {
-                                        if let file = dir.sortedFiles().first {
-                                            AsyncImage(url: file.url) { image in
-                                                image
-                                                    .resizable()
-                                            } placeholder: {
-                                                ProgressView()
-                                            }
-                                            .aspectRatio(contentMode: .fill)
+                                    if dir.hasDirectory() {
+                                        ZStack {
+                                            Image(nsImage: icon)
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 160)
+                                                .padding()
                                             Text(dir.url.lastPathComponent)
-                                                .foregroundColor(state.selectedDirectory == dir ? .blue : .white)
+                                                .frame(width: 160)
+                                                .padding()
+                                        }
+                                        .onTapGesture(count: 2) {
+                                            state.currentDirectory = dir
+                                        }
+                                        .onTapGesture {
+                                            state.selectedDirectory = dir
+                                            state.imageViewType = .grid
                                         }
                                     }
-                                    .id(i)
-                                    .padding()
-                                    .frame(height: 260)
-                                    .onTapGesture {
-                                        state.selectedDirectory = dir
-                                        state.selectedFile = state.selectedDirectory?.files.first
-                                        state.searchTextEditing = false
+                                    if dir.hasFile() {
+                                        VStack {
+                                            if let file = dir.sortedFiles().first {
+                                                AsyncImage(url: file.url) { image in
+                                                    image
+                                                        .resizable()
+                                                } placeholder: {
+                                                    ProgressView()
+                                                }
+                                                .aspectRatio(contentMode: .fill)
+                                                .frame(height: 240)
+                                                .clipped()
+                                                Text(dir.url.lastPathComponent)
+                                                    .foregroundColor(state.selectedDirectory == dir ? .blue : .white)
+                                            }
+                                        }
+                                        .id(i)
+                                        .padding()
+                                        .frame(height: 280)
+                                        .onTapGesture {
+                                            state.imageViewType = .grid
+                                            state.selectedDirectory = dir
+                                            state.selectedFile = state.selectedDirectory?.files.first
+                                            state.searchTextEditing = false
+                                        }
                                     }
                                 }
                             }

@@ -12,14 +12,17 @@ class Directory: Hashable, Identifiable {
     let url: URL
     var directories: [Directory] = []
     var files: [File] = []
-    weak var parent: Directory?
+    
+    var parent: Directory?
     var isOpened: Bool = false
     
     private var loaded: Bool = false
     
     init(url: URL, parent: Directory?) {
         self.url = url
-        self.parent = parent
+        if let dir = parent {
+            self.parent = dir
+        }
     }
     
     func load() {
@@ -95,11 +98,20 @@ class Directory: Hashable, Identifiable {
     }
     
     func hasDirectory() -> Bool {
+        load()
         return !directories.isEmpty
     }
     
     func hasFile() -> Bool {
+        load()
         return !files.isEmpty
+    }
+    
+    func getParent() -> Directory? {
+        if parent == nil {
+            parent = Directory(url: url.deletingLastPathComponent(), parent: nil)
+        }
+        return parent
     }
     
     func hash(into hasher: inout Hasher) {

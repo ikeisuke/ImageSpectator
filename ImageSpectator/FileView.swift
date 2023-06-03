@@ -21,29 +21,59 @@ struct FileView: View {
                         if let dir = state.selectedDirectory {
                             ScrollViewReader { value in
                                 let files = dir.sortedFiles()
+                                let dirs = dir.sortedDirectories(sort: state.directorySortType, filter: state.searchText)
                                 let index = state.selectedFile?.index()
                                 ScrollView {
                                     LazyVGrid(columns: Array(repeating: GridItem(.fixed(width)), count: state.imageViewVerticalColumnSize)) {
-                                        ForEach(files.indices, id: \.self) { i in
-                                            let file = files[i]
-                                            VStack {
-                                                AsyncImage(url: file.url) { image in
-                                                    image
-                                                        .resizable()
-                                                } placeholder: {
-                                                    ProgressView()
+                                        Section {
+                                            ForEach(files, id: \.id) { file in
+                                                VStack {
+                                                    AsyncImage(url: file.url) { image in
+                                                        image
+                                                            .resizable()
+                                                    } placeholder: {
+                                                        ProgressView()
+                                                    }
+                                                    .aspectRatio(contentMode: .fit)
+                                                    Text(file.url.lastPathComponent)
                                                 }
-                                                .aspectRatio(contentMode: .fit)
-                                                Text(file.url.lastPathComponent)
+                                                //                                            .id(i)
+                                                .padding()
+                                                //                                            .border(Color.blue, width: i == index ? 4 : 0)
+                                                .frame(maxWidth: width)
+                                                .onTapGesture {
+                                                    state.imageViewType = .horizontal
+                                                    state.selectedFile = file
+                                                    state.searchTextEditing = false
+                                                }
                                             }
-                                            .id(i)
-                                            .padding()
-                                            .border(Color.blue, width: i == index ? 4 : 0)
-                                            .frame(maxWidth: width)
-                                            .onTapGesture {
-                                                state.imageViewType = .horizontal
-                                                state.selectedFile = file
-                                                state.searchTextEditing = false
+                                        }
+                                        ForEach(dirs, id: \.id) { dir in
+                                            let files = dir.sortedFiles()
+                                            Section(header: Text(dir.url.lastPathComponent)) {
+                                                ForEach(files, id: \.id) { file in
+                                                    VStack {
+                                                        AsyncImage(url: file.url) { image in
+                                                            image
+                                                                .resizable()
+                                                        } placeholder: {
+                                                            ProgressView()
+                                                        }
+                                                        .aspectRatio(contentMode: .fit)
+                                                        Text(file.url.lastPathComponent)
+                                                    }
+                                                    //                                                .id(i)
+                                                    .padding()
+                                                    //                                                .border(Color.blue, width: i == index ? 4 : 0)
+                                                    .frame(maxWidth: width)
+                                                    .onTapGesture {
+                                                        state.imageViewType = .horizontal
+                                                        state.selectedFile = file
+                                                        state.selectedDirectory = file.parent
+                                                        state.currentDirectory = file.parent.parent
+                                                        state.searchTextEditing = false
+                                                    }
+                                                }
                                             }
                                         }
                                     }

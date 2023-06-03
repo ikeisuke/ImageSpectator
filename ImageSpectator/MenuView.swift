@@ -17,7 +17,7 @@ struct MenuView: View {
                 state.autoPlay.toggle()
             }) {
                 Image(systemName: state.autoPlay ? "pause.circle" : "play.circle")
-                    .font(.system(size: 16))
+                    .font(.system(size: 14))
             }
             HStack {
                 Text("Speed:")
