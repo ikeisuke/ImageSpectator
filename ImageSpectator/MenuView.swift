@@ -12,6 +12,29 @@ struct MenuView: View {
     
     var body: some View {
         HStack {
+            Spacer().frame(width: 20.0)
+            Button(action: {
+                state.autoPlay.toggle()
+            }) {
+                Image(systemName: state.autoPlay ? "pause.circle" : "play.circle")
+                    .font(.system(size: 16))
+            }
+            HStack {
+                Text("Speed:")
+                Button(action: {
+                    state.autoPlaySpeed -= 0.25
+                    if state.autoPlaySpeed < 0.5 { state.autoPlaySpeed = 0.5 }
+                }) {
+                    Text("-")
+                }
+                Text("\(state.autoPlaySpeed, specifier: "%.2f")x")
+                Button(action: {
+                    state.autoPlaySpeed += 0.25
+                    if state.autoPlaySpeed > 2.0 { state.autoPlaySpeed = 2.0 }
+                }) {
+                    Text("+")
+                }
+            }
             Spacer()
             if state.imageViewType == .horizontal {
                 Text("Per Page:")

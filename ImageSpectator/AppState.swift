@@ -118,6 +118,8 @@ class AppState: ObservableObject {
             }
         }
     }
+    @Published var autoPlay: Bool = false
+    @Published var autoPlaySpeed: Float = 1.0
     init() {
         let userDefaults = UserDefaults.standard
         do {

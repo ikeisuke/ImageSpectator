@@ -15,6 +15,7 @@ struct FileView: View {
         VStack {
             ZStack {
                 GeometryReader { geometry in
+                    let timer = Timer.publish(every: 5.0 / Double(state.autoPlaySpeed), on: .main, in: .common).autoconnect()
                     if state.imageViewType == .grid {
                         let width = (geometry.size.width - 10 * (CGFloat(state.imageViewVerticalColumnSize) - 1)) / CGFloat(state.imageViewVerticalColumnSize) - 20
                         if let dir = state.selectedDirectory {
@@ -33,6 +34,7 @@ struct FileView: View {
                                                     ProgressView()
                                                 }
                                                 .aspectRatio(contentMode: .fit)
+                                                Text(file.url.lastPathComponent)
                                             }
                                             .id(i)
                                             .padding()
@@ -70,6 +72,7 @@ struct FileView: View {
                                                     ProgressView()
                                                 }
                                                 .aspectRatio(contentMode: .fit)
+                                                Text(file.url.lastPathComponent)
                                             }
                                             .id(i)
                                             .padding()
@@ -91,7 +94,16 @@ struct FileView: View {
                                             value.scrollTo(files.firstIndex(of: file))
                                         }
                                     }
-                                }
+                                }.onReceive(timer, perform: { _ in
+                                    if state.autoPlay {
+                                        if let file = state.selectedFile?.next() {
+                                            withAnimation {
+                                                value.scrollTo(files.firstIndex(of: file))
+                                                state.selectedFile = file
+                                            }
+                                        }
+                                    }
+                                })
                             }
                         }
                     } else if (state.imageViewType == .horizontal) {
@@ -102,21 +114,30 @@ struct FileView: View {
                                         if state.imageViewHorizontalDirectionType == .left && state.imageViewHorizontalColumnSize == 2 {
                                             if let next = selected.next() {
                                                 if let image = NSImage(contentsOf: next.url) {
-                                                    Image(nsImage: image)
-                                                        .resizable()
-                                                        .aspectRatio(contentMode: .fit)
+                                                    VStack {
+                                                        Image(nsImage: image)
+                                                            .resizable()
+                                                            .aspectRatio(contentMode: .fit)
+                                                        Text(next.url.lastPathComponent)
+                                                    }
                                                 }
                                             }
                                         }
-                                        Image(nsImage: image)
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
+                                        VStack {
+                                            Image(nsImage: image)
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                            Text(selected.url.lastPathComponent)
+                                        }
                                         if state.imageViewHorizontalDirectionType == .right && state.imageViewHorizontalColumnSize == 2 {
                                             if let next = selected.next() {
                                                 if let image = NSImage(contentsOf: next.url) {
-                                                    Image(nsImage: image)
-                                                        .resizable()
-                                                        .aspectRatio(contentMode: .fit)
+                                                    VStack {
+                                                        Image(nsImage: image)
+                                                            .resizable()
+                                                            .aspectRatio(contentMode: .fit)
+                                                        Text(next.url.lastPathComponent)
+                                                    }
                                                 }
                                             }
                                         }
@@ -130,6 +151,7 @@ struct FileView: View {
                                                         state.selectedFile = file
                                                     }
                                                     state.searchTextEditing = false
+                                                    state.autoPlay = false
                                                 }
                                             Color.green.opacity(0.01)
                                                 .frame(width: geometry.size.width / 2, height: geometry.size.height)
@@ -138,10 +160,19 @@ struct FileView: View {
                                                         state.selectedFile = file
                                                     }
                                                     state.searchTextEditing = false
+                                                    state.autoPlay = false
                                                 }
                                         }
                                     }
-                                }
+                                }.onReceive(timer, perform: { _ in
+                                    if state.autoPlay {
+                                        if let file = state.selectedFile?.next(num: state.imageViewHorizontalColumnSize) {
+                                            withAnimation {
+                                                state.selectedFile = file
+                                            }
+                                        }
+                                    }
+                                })
                             }
                         }
                     }
