@@ -28,7 +28,10 @@ class Directory: Hashable, Identifiable {
         }
         let fileManager = FileManager.default
         do {
-            let contents = try fileManager.contentsOfDirectory(at: self.url, includingPropertiesForKeys: [.contentAccessDateKey])
+            let contents = try fileManager.contentsOfDirectory(
+                at: self.url,
+                includingPropertiesForKeys: [.contentAccessDateKey]
+            )
             var tmpFiles: [File] = [];
             for content in contents {
                 var isDirectory: ObjCBool = false
@@ -59,7 +62,14 @@ class Directory: Hashable, Identifiable {
         } else {
             result = directories.sorted(by: { $0.url.lastPathComponent < $1.url.lastPathComponent })
         }
-        return result.filter({filter.isEmpty || $0.url.lastPathComponent.contains(filter)})
+        return result.filter({
+            filter.isEmpty || $0.url.lastPathComponent.range(
+                of:filter,
+                options: [.caseInsensitive, .widthInsensitive],
+                range: nil,
+                locale: Locale(identifier: "ja_JP")
+            ) != nil
+        })
     }
     
     func sortedFiles() -> [File] {

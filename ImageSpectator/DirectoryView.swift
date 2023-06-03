@@ -9,6 +9,8 @@ import SwiftUI
 
 struct DirectoryView: View {
     @ObservedObject var state: AppState
+    
+    @FocusState var focused: Bool
 
     var body: some View {
         VStack {
@@ -24,6 +26,7 @@ struct DirectoryView: View {
                     TextField("Search", text: $state.searchText){
                         state.searchTextEditing = false
                     }
+                    .focused($focused)
                     .multilineTextAlignment(.center)
                     .disabled(state.rootDirectory==nil)
                     .keyboardShortcut(KeyEquivalent("\r"), modifiers: [])
@@ -33,6 +36,7 @@ struct DirectoryView: View {
                         .frame(maxWidth: 200)
                         .onTapGesture {
                             state.searchTextEditing = true
+                            focused = true
                         }
                 }
                 Spacer()

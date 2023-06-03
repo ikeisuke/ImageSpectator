@@ -22,7 +22,9 @@ enum DirectorySortType: String, CaseIterable {
 }
 
 enum CodingKeys {
-    case rootDirectory, searchText, imageViewType, imageViewGridColumnSize, imageViewVertivalColumnSize, imageViewHorizontalColumnSize, imageViewHorizontalDirectionType, directorySortType, selectedDirectory, selectedFile
+    case rootDirectory, searchText, imageViewType, imageViewGridColumnSize,
+         imageViewVertivalColumnSize, imageViewHorizontalColumnSize, imageViewHorizontalDirectionType,
+         directorySortType, selectedDirectory, selectedFile
 }
 
 class AppState: ObservableObject {
@@ -123,10 +125,13 @@ class AppState: ObservableObject {
                 return
             }
             var isBookmarkStale = false
-            let url = try URL(resolvingBookmarkData: bookmarkData, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isBookmarkStale)
-            
+            let url = try URL(resolvingBookmarkData: bookmarkData,
+                              options: .withSecurityScope,
+                              relativeTo: nil,
+                              bookmarkDataIsStale: &isBookmarkStale)
             if !url.startAccessingSecurityScopedResource() {
                 // Handle the failure case
+                return
             }
             rootDirectory = Directory(url: url, parent: nil)
             if let dir = rootDirectory {
