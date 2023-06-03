@@ -8,6 +8,7 @@
 import SwiftUI
 
 @main
+
 struct ImageSpectatorApp: App {
     private let state: AppState = AppState()
     var body: some Scene {
@@ -26,6 +27,7 @@ struct ImageSpectatorApp: App {
                         if  let url = openPanel.url {
                             state.rootDirectory = Directory(url: url, parent: nil)
                             if let dir = state.rootDirectory {
+                                state.currentDirectory = dir
                                 dir.load()
                             }
                         }

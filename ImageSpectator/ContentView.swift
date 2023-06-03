@@ -33,6 +33,8 @@ struct ContentView: View {
                             DirectoryView(state: state)
                             FileView(state: state)
                         }
+                    } else {
+                        Spacer()
                     }
                 }
             }
